@@ -1,0 +1,42 @@
+OASISFormat: 0.4
+Name:        bap
+Version:     0.9.9
+Synopsis:    BAP RPC Server
+Authors:     BAP Team
+Maintainers: Ivan Gotovchits <ivg@ieee.org>
+License:     MIT
+Copyrights:  (C) 2014 Carnegie Mellon University
+Plugins:     META (0.4)
+AlphaFeatures: ocamlbuild_more_args
+BuildTools: ocamlbuild, camlp4o
+BuildDepends:
+              bin_prot.syntax,
+              camlp4,
+              comparelib.syntax,
+              core_kernel,
+              enumerate.syntax,
+              faillib.syntax,
+              fieldslib.syntax,
+              herelib.syntax,
+              sexplib.syntax,
+              variantslib.syntax
+
+
+Flag zmq
+  Description: Build ZMQ transports for BAP server
+  Default: false
+
+Library zmq
+  Path:           src
+  Build$:         flag(zmq)
+  CompiledObject: best
+  Install:        false
+  Modules:        Zmq_client, Zmq_server
+
+
+Executable "bap-server"
+  Path:           src
+  CompiledObject: best
+  BuildDepends:   bap, bap.plugins, ezjsonm, uri, cohttp.lwt, core_lwt, re
+  Install:        true
+  MainIs:         start_server.ml

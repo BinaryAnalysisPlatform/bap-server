@@ -1,0 +1,13 @@
+# OASIS_START
+# DO NOT EDIT (digest: 0069b890bb76e3e409a226e6eef27da7)
+version = "0.9.9"
+description = "BAP RPC Server"
+requires =
+"bin_prot.syntax camlp4 comparelib.syntax core_kernel enumerate.syntax faillib.syntax fieldslib.syntax herelib.syntax sexplib.syntax variantslib.syntax"
+archive(byte) = "zmq.cma"
+archive(byte, plugin) = "zmq.cma"
+archive(native) = "zmq.cmxa"
+archive(native, plugin) = "zmq.cmxs"
+exists_if = "zmq.cma"
+# OASIS_STOP
+
