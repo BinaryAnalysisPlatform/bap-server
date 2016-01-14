@@ -1,5 +1,5 @@
 opam-version: "1.2"
-name: "bap"
+name: "bap-server"
 version: "master"
 maintainer: "Ivan Gotovchits <ivg@ieee.org>"
 authors: "BAP Team"
@@ -9,7 +9,7 @@ dev-repo: "git://github.com/BinaryAnalysisPlatform/bap-server/"
 license: "MIT"
 build: [
   ["oasis" "setup"]
-  ["ocaml" "setup.ml" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
 ]
 
@@ -22,7 +22,7 @@ remove: [
 ]
 
 depends: [
-    "base-unix"
+    "core-lwt"
     "bap"
     "cohttp" {>= "0.15.0"}
     "core_kernel" {>= "111.28.0" & < "112.35.0"}
