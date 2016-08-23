@@ -1,13 +1,15 @@
-B ../../_build/src/server
-B ../../_build/lwt
-REC
+B _build/src
 PKG ezjsonm
 PKG lwt
 PKG lwt-zmq
-PKG ZMQ
 PKG uri
 PKG cohttp.lwt
 PKG cohttp
+PKG bap
+PKG bap-arm
+PKG core_lwt
 
-S .
-S ../../lwt
+S src
+
+FLG -short-paths
+FLG -w -4-33-40-41-42-43-34-44

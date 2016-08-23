@@ -9,7 +9,7 @@ open Bap.Std
 open Rpc
 
 
-type t with sexp_of
+type t [@@deriving sexp_of]
 
 
 val of_image   : image -> t

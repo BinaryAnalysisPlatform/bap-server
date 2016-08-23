@@ -23,7 +23,7 @@ type t = {
   providers : provider String.Table.t;
   fetchers  : fetcher String.Table.t;
   services  : service String.Table.t;
-} with fields
+} [@@deriving fields]
 
 open Fields
 

@@ -40,5 +40,5 @@ let () =
   let module F = File_fetcher in
   let module M = Mmap_client in
   let module N = Mmap_server in
-  let () = Plugins.load () in
+  let () = Plugins.run () in
   Lwt.Main.run @@ main ()

@@ -9,17 +9,7 @@ Copyrights:  (C) 2016 Carnegie Mellon University
 Plugins:     META (0.4)
 AlphaFeatures: ocamlbuild_more_args
 BuildTools: ocamlbuild, camlp4o
-BuildDepends:
-              bin_prot.syntax,
-              camlp4,
-              comparelib.syntax,
-              core_kernel,
-              enumerate.syntax,
-              faillib.syntax,
-              fieldslib.syntax,
-              herelib.syntax,
-              sexplib.syntax,
-              variantslib.syntax
+BuildDepends: core_kernel, ppx_jane
 
 
 Flag zmq
@@ -37,6 +27,6 @@ Library zmq
 Executable "bap-server"
   Path:           src
   CompiledObject: best
-  BuildDepends:   bap, bap.plugins, ezjsonm, uri, cohttp.lwt, core_lwt, re
+  BuildDepends:   bap, bap-arm, ezjsonm, uri, cohttp.lwt, core_lwt, re, findlib.dynload
   Install:        true
   MainIs:         start_server.ml

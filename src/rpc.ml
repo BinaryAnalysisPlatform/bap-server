@@ -5,13 +5,13 @@ open Ezjsonm
 
 type response = Ezjsonm.t
 type request = Ezjsonm.t
-type target  = string with sexp_of
+type target  = string [@@deriving sexp_of]
 type uri = Uri.t
 type links = Uri.t List1.t
 type 'a resource = links * 'a
-type id = string with sexp_of
-type res_id = string with sexp_of
-type res_ids = res_id list with sexp_of
+type id = string [@@deriving sexp_of]
+type res_id = string [@@deriving sexp_of]
+type res_ids = res_id list [@@deriving sexp_of]
 
 type value = [
   | `Null
@@ -20,7 +20,7 @@ type value = [
   | `String of string
   | `A of value list
   | `O of (string * value) list
-] with sexp_of
+] [@@deriving sexp_of]
 
 
 let minify = true
@@ -35,7 +35,7 @@ type severity = [
   | `Critical
   | `Error
   | `Warning
-] with bin_io, compare, sexp
+] [@@deriving bin_io, compare, sexp]
 
 let string_of_severity s =
   Sexp.to_string @@ sexp_of_severity s
@@ -89,7 +89,7 @@ module Response = struct
     ]
 
   let string_of_sym s =
-    Sexp.to_string (<:sexp_of<[`debug | `symtab]>> s)
+    Sexp.to_string ([%sexp_of:[`debug | `symtab]] s)
 
   let strings_of_syms syms =
     List.intersperse ~sep:"," @@ List.map syms ~f:string_of_sym
@@ -162,7 +162,7 @@ module Response = struct
     List.map ~f:(fun (r,v) -> r, v image) [
       "arch", string / Arch.to_string / arch;
       "entry_point", string / string_of_addr / entry_point;
-      "addr_size", string / Int.to_string / Size.to_bits / addr_size;
+      "addr_size", string / Int.to_string / Size.in_bits / addr_size;
       "endian", string / Adt.string_of_endian / endian;
     ] @ optional_field "file" string (filename image) @ [
       "segments", strings secs;
@@ -208,7 +208,7 @@ module Target = struct
 end
 
 module Request = struct
-  type t = request with sexp_of
+  type t = request [@@deriving sexp_of]
   let (/) = Fn.compose
 
   let of_string s =
@@ -239,7 +239,7 @@ module Request = struct
 
 
   let word arch =
-    Word.of_int64 ~width:(Arch.addr_size arch |> Size.to_bits)
+    Word.of_int64 ~width:(Arch.addr_size arch |> Size.in_bits)
 
   let arch_of_string arch = match Arch.of_string arch with
     | Some arch -> arch

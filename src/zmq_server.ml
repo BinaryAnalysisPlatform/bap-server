@@ -26,7 +26,7 @@ type socket = {
 }
 
 type supported_transport = [`tcp | `ipc]
-with enumerate, sexp
+[@@deriving enumerate, sexp]
 
 let endpoint_of_proto = function
   | `tcp -> "tcp://*:*"

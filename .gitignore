@@ -21,3 +21,4 @@ setup.log
 /_tags
 /myocamlbuild.ml
 /setup.ml
+/src/META

@@ -1,6 +1,5 @@
 open Core_kernel.Std
 open Core_lwt.Std
-open Lwt_log
 open Bap.Std
 open Rpc
 
@@ -8,45 +7,45 @@ module Res = Manager
 module Dis = Disasm_expert.Basic
 
 let version = "0.1"
+let section = Lwt_log.Section.make "bap_server"
 
 module type Disasms = sig
   val get
     : ?cpu:string -> backend:string -> string
-    -> f:((Dis.asm, Dis.kinds) Dis.t -> 'a Lwt.Or_error.t)
+    -> f:((Dis.asm, Dis.kinds) Dis.t -> 'a Lwt.t)
     -> 'a Lwt.Or_error.t
 end
 
-module Disasms : Disasms = struct
+module Disasms = struct
   type spec = {
     target : string;
     backend : string;
     cpu : string option;
-  } with compare, sexp, fields
+  } [@@deriving compare, sexp, fields]
 
   let disasms = 8
 
   module Spec = Hashable.Make(struct
-      type t = spec with compare, sexp
+      type t = spec [@@deriving compare, sexp]
       let hash = Hashtbl.hash
     end)
-  module Pools = Spec.Table
 
-  let ds = Pools.create ()
+  let ds = Spec.Table.create ()
 
   let rec get ?cpu ~backend target ~f =
     let spec = {target; backend; cpu} in
-    match Pools.find ds spec with
+    match Hashtbl.find ds spec with
     | Some pool -> Lwt.Pool.use pool ~f:(fun dis -> Lwt.return dis >>=? f)
     | None ->
       let pool = Lwt.Pool.create disasms (fun () ->
           Lwt.return @@ Dis.create ?cpu ~backend target >>=? fun dis ->
           let dis = Dis.(dis |> store_asm |> store_kinds) in
           Lwt.Or_error.return dis) in
-      Pools.add_exn ds ~key:spec ~data:pool;
+      Hashtbl.set ds ~key:spec ~data:pool;
       get ?cpu ~backend target ~f
+
 end
 
-let section = Lwt_log.Section.make "bap_server"
 
 let stub name = Lwt.Or_error.unimplemented name
 
@@ -133,33 +132,31 @@ module Handlers(Ctxt : sig
       (Sexp.to_string (Dis.Insn.sexp_of_t insn))
       (Error.to_string_hum err)
 
+  let target_for_arm insn =
+      let arm = ARM.Insn.create (Insn.of_basic insn) in
+      let ops = Array.map (Dis.Insn.ops insn) ~f:ARM.Op.create |>
+                Array.to_list |> Option.all in
+      Option.both arm ops |>
+      Option.map ~f:(Tuple2.uncurry Target.arm)
+
   let arm_lifter : ('a,'b) lifter = fun mem insn ->
-    let arm = ARM.Insn.create insn in
-    let ops = Array.map (Dis.Insn.ops insn) ~f:ARM.Op.create |>
-              Array.to_list |> Option.all in
-    let target = Option.both arm ops |>
-                 Option.map ~f:(Tuple2.uncurry Target.arm) in
+    let target = target_for_arm insn in
     match ARM.lift mem insn with
-    | Ok bil -> return (target, Some bil)
+    | Ok bil ->
+      return (target, Some bil)
     | Error err ->
       bil_error err insn >>= fun () ->
       return (target, None)
 
-  let x86_lifter mem insn = match IA32.lift mem insn with
+  let lifter arch mem insn =
+    let module Target = (val target_of_arch arch) in
+    match Target.lift mem insn with
     | Ok bil -> return (None, Some bil)
     | Error err -> bil_error err insn >>= fun () -> return (None,None)
-
-  let x86_64_lifter mem insn = match AMD64.lift mem insn with
-    | Ok bil -> return (None, Some bil)
-    | Error err -> bil_error err insn >>= fun () -> return (None,None)
-
-  let no_lifter : ('a,'b) lifter = fun _ _ -> return (None,None)
 
   let lifter_of_arch : arch -> ('a,'b) lifter = function
     | #Arch.arm -> arm_lifter
-    | `x86 -> x86_lifter
-    | `x86_64 -> x86_64_lifter
-    | _   -> no_lifter
+    | arch -> lifter arch
 
   let get_insns ?(backend="llvm") stop_on res_id =
     Lwt.return @@ Res.id_of_string res_id >>=? fun id ->
@@ -233,7 +230,7 @@ let run_exn (requests, replies) : unit Lwt.t =
     Lwt.Stream.Push_queue.push replies x >>= function
     | Ok () -> Lwt.return_unit
     | Error err ->
-      error_f "Service has finished with error: %s"
+      Lwt_log.error_f "Service has finished with error: %s"
         (Error.to_string_hum err) >>= fun () ->
       Lwt.fail Stopped in
   let handle_request req =
@@ -251,7 +248,8 @@ let run_exn (requests, replies) : unit Lwt.t =
         | Error err' ->
           let err = Error.of_list [err; err'] in
           let str = Error.to_string_hum err in
-          warning_f ~section "Ignoring junk request: %s" str >>= fun () ->
+          Lwt_log.warning_f ~section "Ignoring junk request: %s" str
+          >>= fun () ->
           let msg = Response.error `Error str in
           Response.create (Id.of_string "0") msg |> reply)
 

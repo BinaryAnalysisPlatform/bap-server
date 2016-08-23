@@ -11,17 +11,17 @@ module Body = Cohttp_lwt_body
 
 let headers = Header.of_list [
     "allow", "GET, POST";
-    "server", "BAP/0.1";
+    "server", "BAP/1.0.0~alpha";
   ]
 
 
 let start ~new_connection =
   let callback conn req body =
     let to_client,queue = Lwt.Stream.create_bounded max_messages in
-    let of_client = Lwt.Stream.clone (Body.to_stream body) in
+    let of_client = Body.to_stream body in
     new_connection (of_client, queue);
     let body = Body.of_stream to_client in
-    Http.Server.respond ~flush:false ~headers ~status:`OK ~body () in
+    Http.Server.respond ~flush:true ~headers ~status:`OK ~body () in
   let srv = Http.Server.make ~callback () in
   Http.Server.create srv >>= Lwt.Or_error.return
 

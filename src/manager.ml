@@ -1,5 +1,6 @@
 open Core_kernel.Std
 open Core_lwt.Std
+open Regular.Std
 
 open Bap.Std
 
@@ -11,6 +12,7 @@ module Id = struct
   include Regular.Make(struct
       include Int64
       let module_name = Some "Manager.Id"
+      let version = "0.1"
     end)
 end
 
@@ -36,7 +38,7 @@ type meta = {
 type 'a resource = {
   meta : meta;
   mutable data : 'a hashed;
-} with fields
+} [@@deriving fields]
 
 
 type context = {
@@ -50,7 +52,7 @@ type context = {
   symbol_of_memory   : id Ids.t;
   segment_of_symbol  : id Ids.t;
   image_of_segment   : id Ids.t;
-} with fields
+} [@@deriving fields]
 
 
 

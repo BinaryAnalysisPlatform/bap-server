@@ -1,5 +1,6 @@
 open Core_kernel.Std
 open Bap.Std
+open Regular.Std
 
 let pr ch fms = Format.fprintf ch fms
 
@@ -13,7 +14,7 @@ let pp_endian ch = function
   | LittleEndian -> pr ch "LittleEndian()"
 
 let pp_size ch size =
-  pr ch "%d" (Size.to_bits size)
+  pr ch "%d" (Size.in_bits size)
 
 let pp_sexp sexp ch x =
   pr ch "%a" Sexp.pp (sexp x)
@@ -33,8 +34,8 @@ end
 module Arm = struct
   open Disasm
   let pp_op ch = function
-    | ARM.Op.Imm imm -> pr ch "Imm(%a)" pp_word imm
-    | ARM.Op.Reg reg -> pr ch "Reg(%a())" ARM.Reg.pp reg
+    | `Imm imm -> pr ch "Imm(%a)" pp_word imm
+    | `Reg reg -> pr ch "Reg(%a())" ARM.Reg.pp reg
 
   let pp_insn ch (insn,ops) =
     pr ch "%a(%a)"

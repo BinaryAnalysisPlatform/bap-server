@@ -4,6 +4,7 @@
 open Core_kernel.Std
 open Core_lwt.Std
 open Bap.Std
+open Regular.Std
 
 (** Abstract identifier.
     This types implements [Regular] interface see [Id]

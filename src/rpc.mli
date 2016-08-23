@@ -4,11 +4,11 @@ open Bap.Std
 type request
 type response
 type target
-type id with sexp_of
+type id [@@deriving sexp_of]
 type links = Uri.t List1.t
 type 'a resource = links * 'a
 type res_id = string
-type res_ids = res_id list with sexp_of
+type res_ids = res_id list [@@deriving sexp_of]
 
 
 module Id : Identifiable with type t := id
