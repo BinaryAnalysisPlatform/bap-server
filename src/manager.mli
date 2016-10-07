@@ -29,7 +29,7 @@ type seg = Image.Segment.t            (** segment  *)
 type img
 
 (** Unique Identifer  *)
-module Id : Regular with type t = id
+module Id : Regular.S with type t = id
 
 
 (** adds file image to the resources data base  *)

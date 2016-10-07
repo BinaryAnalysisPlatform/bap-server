@@ -21,21 +21,23 @@ remove: [
   ["rm" "-f" "%{bin}%/bap-server"]
 ]
 
+
 depends: [
     "core-lwt"
+    "regular"
     "bap-std" "bap-arm"
-    "cohttp" {>= "0.20.0 & <= 0.21.0"}
+    "cohttp" {>= "0.20.0" & <= "0.21.0"}
     "core_kernel" {>= "113.33.00"}
     "ezjsonm" {>= "0.4.0" & < "0.4.4" }
     "lwt"
-    "oasis" {build & >= "0.4.0"}
+    "oasis" {build & = "0.4.7"}
     "re"
     "uri"
 ]
 
 conflicts: [
-    "tls" < "0.7.1"
-    "nocrypto" < "0.5.3"
+    "tls" {< "0.7.1"}
+    "nocrypto" {< "0.5.3"}
 ]
 
 available: [ocaml-version >= "4.01.0"]

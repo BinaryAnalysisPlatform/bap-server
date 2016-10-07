@@ -1,6 +1,6 @@
 OASISFormat: 0.4
-Name:        bap
-Version:     0.9.9
+Name:        bap-server
+Version:     0.1.0
 Synopsis:    BAP RPC Server
 Authors:     BAP Team
 Maintainers: Ivan Gotovchits <ivg@ieee.org>
@@ -8,7 +8,7 @@ License:     MIT
 Copyrights:  (C) 2016 Carnegie Mellon University
 Plugins:     META (0.4)
 AlphaFeatures: ocamlbuild_more_args
-BuildTools: ocamlbuild, camlp4o
+BuildTools: ocamlbuild
 BuildDepends: core_kernel, ppx_jane
 
 
