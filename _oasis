@@ -27,6 +27,6 @@ Library zmq
 Executable "bap-server"
   Path:           src
   CompiledObject: best
-  BuildDepends:   bap, ezjsonm, uri, cohttp.lwt, core_lwt, re, findlib.dynload, threads
+  BuildDepends:   bap, bap-arm, ezjsonm, uri, cohttp.lwt, core_lwt, re, findlib.dynload, threads
   Install:        true
   MainIs:         start_server.ml

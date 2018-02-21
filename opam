@@ -37,4 +37,4 @@ depends: [
     "uri" {>= "1.9.6"}
 ]
 
-available: [ocaml-version >= "4.01.0"]
+available: [ocaml-version >= "4.03.0"]
