@@ -1,11 +1,11 @@
 OASISFormat: 0.4
 Name:        bap-server
-Version:     0.1.0
+Version:     0.2.0
 Synopsis:    BAP RPC Server
 Authors:     BAP Team
 Maintainers: Ivan Gotovchits <ivg@ieee.org>
 License:     MIT
-Copyrights:  (C) 2016 Carnegie Mellon University
+Copyrights:  (C) 2018 Carnegie Mellon University
 Plugins:     META (0.4)
 AlphaFeatures: ocamlbuild_more_args
 BuildTools: ocamlbuild
@@ -27,6 +27,6 @@ Library zmq
 Executable "bap-server"
   Path:           src
   CompiledObject: best
-  BuildDepends:   bap, bap-arm, ezjsonm, uri, cohttp.lwt, core_lwt, re, findlib.dynload
+  BuildDepends:   bap, ezjsonm, uri, cohttp.lwt, core_lwt, re, findlib.dynload, threads
   Install:        true
   MainIs:         start_server.ml
