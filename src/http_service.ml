@@ -7,11 +7,11 @@ let section = Section.make "Http_transport"
 let max_messages = 1000
 
 module Http = Cohttp_lwt_unix
-module Body = Cohttp_lwt_body
+module Body = Cohttp_lwt.Body
 
 let headers = Header.of_list [
     "allow", "GET, POST";
-    "server", "BAP/1.0.0~alpha";
+    "server", "BAP/1.4.0";
   ]
 
 
