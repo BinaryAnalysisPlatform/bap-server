@@ -1,4 +1,4 @@
-open Core_kernel.Std
+open Core_kernel
 open Core_lwt.Std
 open Bap.Std
 open Rpc
@@ -25,10 +25,12 @@ module Disasms = struct
 
   let disasms = 8
 
-  module Spec = Hashable.Make(struct
-      type t = spec [@@deriving compare, sexp]
-      let hash = Hashtbl.hash
-    end)
+  module T = struct
+    type t = spec [@@deriving compare, sexp]
+    let hash = Hashtbl.hash
+  end
+
+  module Spec = Hashable.Make_and_derive_hash_fold_t(T)
 
   let ds = Spec.Table.create ()
 

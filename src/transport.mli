@@ -3,7 +3,7 @@
     Hides underlying transporting protocols
 
 *)
-open Core_kernel.Std
+open Core_kernel
 open Core_lwt.Std
 
 type ('a,'b) pipe = 'a Lwt.Stream.t * ('b Lwt.Stream.bounded_push)
