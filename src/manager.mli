@@ -1,7 +1,7 @@
 (** Resource Manager.
 
 *)
-open Core_kernel.Std
+open Core_kernel
 open Core_lwt.Std
 open Bap.Std
 open Regular.Std
