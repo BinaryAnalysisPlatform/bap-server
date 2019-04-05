@@ -144,7 +144,7 @@ let add_memory arch addr uri : id Lwt.Or_error.t =
   let endian = Arch.endian arch in
   match Memory.create ~pos ~len endian addr data with
   | Error err ->
-    Error.tag_arg err "fetching chunk from" uri Uri.sexp_of_t |>
+    Error.tag_arg err "fetching chunk from" uri Uri_sexp.sexp_of_t |>
     Lwt.Or_error.fail
   | Ok mem ->
     let id = next_id () in
